@@ -1,31 +1,25 @@
-import _ from "lodash";
-import HttpErrors from "http-errors";
+import _ from 'lodash'
+import HttpError from 'http-errors'
 
 const validator =
-  (schema, path = "body") =>
-  (req, res, next) => {
-    try {
-      const v = schema.validate(req[path] || {}, { abortEarly: false });
+	(schema, path = 'body') =>
+	(req, res, next) => {
+		try {
+			const v = schema.validate(req[path] || {}, { abortEarly: false })
 
-      if (v.errors) {
-        const errors = {};
+			if (v.error) {
+				const errors = {}
+				v.error.details.forEach(d => {
+					const errorMessage = d.message.replace(/".*"/, '').trim()
+					_.set(errors, d.path, errorMessage)
+				})
+				throw HttpError(422, 'Validation error')
+			}
 
-        v.errors.forEach((d) => {
-          const errorMessage = d.message.replace(/".*"/, "").trim();
-          _.set(errors, d[path], errorMessage);
-        });
+			next()
+		} catch (e) {
+			next(e)
+		}
+	}
 
-        throw new HttpErrors(422, {
-          message: "Validation error",
-          errors,
-        });
-      }
-
-      next();
-    } catch (e) {
-      console.error(e);
-      next(e);
-    }
-  };
-
-export default validator;
+export default validator

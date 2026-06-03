@@ -1,15 +1,24 @@
-import HttpError from "http-errors";
-import jwt from "jsonwebtoken";
+import HttpError from 'http-errors'
+import jwt from 'jsonwebtoken'
 
 export default function authorization(req, res, next) {
-  try {
-    const token = req.signedCookies.token;
-    if (!token) throw new HttpErrors(401, "Missing or tampered cookie");
+	try {
+		const authHeader = req.headers['authorization']
+		const token = authHeader && authHeader.split(' ')[1]
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.userId;
-    next();
-  } catch (e) {
-    next(new HttpErrors(401, "Invalid session"));
-  }
+		if (!token) throw HttpError(401, 'No token provided')
+
+		const payload = jwt.verify(token, process.env.JWT_SECRET)
+		req.user = payload
+		next()
+	} catch (e) {
+		next(HttpError(401, 'Invalid or expired token'))
+	}
+}
+
+export function isAdmin(req, res, next) {
+	if (req.user?.role !== 'admin') {
+		return next(HttpError(403, 'Admin access required'))
+	}
+	next()
 }

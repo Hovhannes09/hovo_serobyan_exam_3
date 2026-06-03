@@ -1,31 +1,7 @@
-import HttpErrors from "http-errors";
-import _ from "lodash";
-
-const validator =
-  (schema, path = "body") =>
-  (req, res, next) => {
-    try {
-      const v = schema.validate(req[path], { abortEarly: false });
-
-      if (v.error) {
-        const errors = {};
-
-        v.error.details.forEach((d) => {
-          const errorMessage = d.message.replace(/".*"/, "").trim();
-          _.set(errors, d.path, errorMessage);
-        });
-
-        throw new HttpErrors(422, {
-          message: "Validation error",
-          errors,
-        });
-      }
-
-      next();
-    } catch (e) {
-      console.error(e);
-      next(e);
-    }
-  };
-
-export default validator;
+export default function errorHandler(err, req, res, next) {
+	const status = err.status || 500
+	res.status(status).json({
+		message: err.message || 'Internal server error',
+		errors: err.errors || undefined
+	})
+}
