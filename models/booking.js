@@ -1,31 +1,30 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+import Film from "./film.js";
 
-const Film = sequelize.define("Film", {
+const Booking = sequelize.define("Booking", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
-
-const Comment = sequelize.define("Comment", {
-  id: {
+  userId: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+    allowNull: false,
   },
-  content: {
-    type: DataTypes.TEXT,
+  filmId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 });
 
-Film.hasMany(Comment, { foreignKey: "filmId", onDelete: "CASCADE" });
-Comment.belongsTo(Film, { foreignKey: "filmId" });
+Film.hasMany(Booking, {
+  foreignKey: "filmId",
+  onDelete: "CASCADE",
+});
 
-export default Comment;
+Booking.belongsTo(Film, {
+  foreignKey: "filmId",
+});
+
+export default Booking;
