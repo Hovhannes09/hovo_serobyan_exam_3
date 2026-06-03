@@ -1,12 +1,11 @@
 import express from 'express'
 import {
-	getAllBookings,
 	createShowtime,
-	moderateComment,
-	getTopFilms
+	getAllBookings,
+	getTopFilms,
+	moderateComment
 } from '../controllers/adminController.js'
-import authorization from '../middlewares/auth.js'
-import { isAdmin } from '../middlewares/auth.js'
+import authorization, { isAdmin } from '../middlewares/auth.js'
 
 const router = express.Router()
 
