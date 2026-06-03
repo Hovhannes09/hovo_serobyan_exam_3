@@ -3,9 +3,7 @@ import jwt from 'jsonwebtoken'
 
 export default function authorization(req, res, next) {
 	try {
-		const authHeader = req.headers['authorization']
-		const token = authHeader && authHeader.split(' ')[1]
-
+		const token = req.cookies?.token
 		if (!token) throw HttpError(401, 'No token provided')
 
 		const payload = jwt.verify(token, process.env.JWT_SECRET)

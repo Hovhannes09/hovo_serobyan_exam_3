@@ -44,7 +44,6 @@ export async function createComment(req, res) {
 				.status(400)
 				.json({ message: 'Comment must be 500 characters or less' })
 
-		// проверка что пользователь бронировал этот фильм
 		const hasSeen = await Booking.findOne({
 			where: { user_id: req.user.id, status: 'confirmed' },
 			include: [{ model: Showtime, where: { film_id } }]
@@ -54,7 +53,6 @@ export async function createComment(req, res) {
 				.status(403)
 				.json({ message: 'You can only review films you have booked' })
 
-		// один отзыв на фильм
 		const existing = await Comment.findOne({
 			where: { user_id: req.user.id, film_id }
 		})

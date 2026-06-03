@@ -60,13 +60,23 @@ export async function login(req, res) {
 			{ expiresIn: '24h' }
 		)
 
+		res.cookie('token', token, {
+			httpOnly: true,
+			maxAge: 24 * 60 * 60 * 1000
+		})
+
 		res.json({
-			token,
+			message: 'Logged in',
 			user: { id: user.id, email: user.email, role: user.role }
 		})
 	} catch (err) {
 		res.status(500).json({ message: 'Server error', error: err.message })
 	}
+}
+
+export async function logout(req, res) {
+	res.clearCookie('token')
+	res.json({ message: 'Logged out' })
 }
 
 export async function changePassword(req, res) {
