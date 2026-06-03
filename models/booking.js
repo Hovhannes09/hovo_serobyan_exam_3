@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 import Film from "./film.js";
 
-const Booking = sequelize.define("Booking", {
+const Booking = sequelize.init("Booking", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
