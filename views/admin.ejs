@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Admin Panel</title>
+	</head>
+	<body>
+		<h1>Admin Dashboard</h1>
+
+		<form id="filmForm">
+			<input
+				type="text"
+				id="title"
+				placeholder="Title"
+			/>
+
+			<input
+				type="text"
+				id="genre"
+				placeholder="Genre"
+			/>
+
+			<input
+				type="number"
+				id="duration"
+				placeholder="Duration"
+			/>
+
+			<textarea
+				id="description"
+				placeholder="Description"
+			></textarea>
+
+			<button type="submit">Add Film</button>
+		</form>
+
+		<form id="showtimeForm">
+			<input
+				type="number"
+				id="showDate"
+				placeholder="ShowDate"
+			/>
+
+			<input
+				type="number"
+				id="showTime"
+				placeholder="ShowTime"
+			/>
+
+			<input
+				type="number"
+				id="price"
+				placeholder="Price"
+			/>
+
+			<input
+				type="number"
+				id="filmId"
+				placeholder="Film ID"
+			/>
+
+			<button type="submit">Add Showtime</button>
+		</form>
+
+		<script>
+			document
+				.getElementById('filmForm')
+				.addEventListener('submit', async e => {
+					e.preventDefault()
+
+					const title = document.getElementById('title').value
+					const genre = document.getElementById('genre').value
+					const duration = document.getElementById('duration').value
+					const description = document.getElementById('description').value
+					const showDate = document.getElementById('showDate').value
+					const showTime = document.getElementById('showTime').value
+					const price = document.getElementById('price').value
+					const filmId = document.getElementById('filmId').value
+
+					await fetch('/films', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							title,
+							genre,
+							duration,
+							description
+						})
+					})
+
+					await fetch('/admin/showtimes', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							showDate: document.getElementById('showDate').value,
+							showTime: document.getElementById('showTime').value,
+							price: document.getElementById('price').value,
+							filmId: document.getElementById('filmId').value
+						})
+					})
+
+					alert('Showtime created')
+					alert('Film created')
+				})
+		</script>
+	</body>
+</html>
